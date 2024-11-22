@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: insurance-app
+    environment:
+      - DB_USER=${DB_USER}           # передаем переменные окружения для пользователя
+      - DB_PASS=${DB_PASS}           # передаем переменные окружения для пароля
+      - DB_HOST=db                   # хост базы данных в Docker - имя контейнера PostgreSQL
+      - DB_PORT=${DB_PORT}           # передаем порт (обычно 5432 для PostgreSQL)
+      - DB_NAME=${DB_NAME}           # передаем имя базы данных
+    depends_on:
+      - db                           # указываем, что сервис зависит от контейнера с PostgreSQL
+    ports:
+      - "8000:8000"                  # связываем порт приложения (FastAPI) с внешним портом
+    entrypoint: ["/bin/sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+    networks:
+      - smit-network
+
+  db:
+    image: postgres:latest
+    container_name: insurance-db
+    environment:
+      POSTGRES_USER: ${DB_USER}       # передаем переменные окружения для пользователя
+      POSTGRES_PASSWORD: ${DB_PASS}   # передаем переменные окружения для пароля
+      POSTGRES_DB: ${DB_NAME}         # передаем имя базы данных
+    ports:
+      - "5433:5432"                  # проксируем порт PostgreSQL для связи с контейнером
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # сохраняем данные в volume
+    networks:
+      - smit-network
+
+volumes:
+  postgres_data:                      # volume для хранения данных PostgreSQL
+
+networks:
+  smit-network:                       # создаем общую сеть для контейнеров
+    driver: bridge
