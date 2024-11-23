@@ -15,11 +15,11 @@ cd SMIT-test-task
 
 Create a .env file in the project root and add the following environment variables:
 
-- DB_USER=postgres
-- DB_PASS=8148
-- DB_HOST=db
+- DB_USER=your_db_user
+- DB_PASS=your_db_pass
+- DB_HOST=localhost
 - DB_PORT=5432
-- DB_NAME=SMIT-insurance
+- DB_NAME=your_db_name
 
 ### Third step:
 
@@ -41,3 +41,39 @@ docker-compose up --build
 ```
 
 The Project is ready to go now!
+
+<br><br>
+
+> [!NOTE]
+> If you want to run it locally on your machine, just follow the next instructions:
+> 
+### install the required dependencies:
+```
+pip install -r requirements.txt
+```
+### Create a .env file in the project root and add the following environment variables:
+
+- DB_USER=your_db_user
+- DB_PASS=your_db_pass
+- DB_HOST=localhost
+- DB_PORT=5432
+- DB_NAME=your_db_name
+
+> [!WARNING]
+> _If you are working on a Windows OS, follow these steps:_
+>```
+> pip install asyncio aiohttp
+>```
+
+### Run the database migration:
+```
+alembic upgrade head
+```
+
+### And finally run the project:
+> _From the project's root directory, run the following command:_
+> ```
+> uvicorn app.main:app
+> ```
+
+Thank you!
